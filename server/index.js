@@ -1,11 +1,31 @@
 const express = require('express')
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
+const keys = require('./config/keys')
+
 const app = express()
 
-passport.use(new GoogleStrategy())
+// here we are utlizing passport to create oauth sign in function to our websit
+passport.use(
+  new GoogleStrategy({
+    clientID: keys.googleClientID, //this is our clinet key we got from google+ oauth
+    clientSecret: keys.googleClientSecret, // this is the secret key we got from google+ oauth
+    callbackURL: '/auth/google/callback '
+  }, (acessToken, refreshToken, profile, done) => {
+    console.log('access token', acessToken)
+    console.log('referesh token', refreshToken)
+    console.log('profile:', profile)
+  })
+)
 
-// client_id 172871001145-fvsbp6hqaola2d7i32a2oipugva7lvr4.apps.googleusercontent.com
-// client_secret qK4E4VcXfT3VZ8ROdkXQac73
+app.get(
+  '/auth/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'email']
+  })
+)
+
+app.get('/auth/google/callback', passport.authenticate('google'))
+
 const PORT = process.env.PORT || 5000
 app.listen(PORT)

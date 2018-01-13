@@ -1,6 +1,11 @@
 const express = require('express')
+const mongoose = require('mongoose')
+const keys = require('./config/keys')
 const app = express()
+require('./models/User')
 require('./services/passport')
+
+mongoose.connect(keys.mongoURI)
 
 require('./routes/authRoutes')(app);
 

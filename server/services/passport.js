@@ -1,6 +1,9 @@
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
+const mongoose = require('mongoose')
 const keys = require('../config/keys')
+
+const User =mongoose.model('users')
 
 // here we are utlizing passport to create oauth sign in function to our websit
 passport.use(
@@ -9,8 +12,16 @@ passport.use(
     clientSecret: keys.googleClientSecret, // this is the secret key we got from google+ oauth
     callbackURL: '/auth/google/callback '
   }, (acessToken, refreshToken, profile, done) => {
-    console.log('access token', acessToken)
-    console.log('referesh token', refreshToken)
-    console.log('profile:', profile)
+    User.findOne({ googleId: profile.id }).then((existingUser) => {
+      if(existingUser) {
+        // we already have a record with the given profile id
+        done(null, existingUser)
+      } else {
+        // we dont have a user with this ID
+        new User({ googleId: profile.id })
+          .save()
+          .then(user => done(null, user))
+      }
+    })
   })
 )

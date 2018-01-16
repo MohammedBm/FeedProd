@@ -23,21 +23,18 @@ passport.use(
     clientSecret: keys.googleClientSecret, // this is the secret key we got from google+ oauth
     callbackURL: '/auth/google/callback',
     proxy: true
-  }, (acessToken, refreshToken, profile, done) => {
-    User.findOne({
+  },
+  async(acessToken, refreshToken, profile, done) => {
+    const existingUser = await User.findOne({
       googleId: profile.id
-    }).then((existingUser) => {
-      if (existingUser) {
-        // we already have a record with the given profile id
-        done(null, existingUser)
-      } else {
-        // we dont have a user with this ID
-        new User({
-            googleId: profile.id
-          })
-          .save()
-          .then(user => done(null, user))
-      }
     })
+
+    if (existingUser) {
+      // we already have a record with the given profile id
+      return done(null, existingUser)
+    }
+      // we dont have a user with this ID
+      const user = await new User({ googleId: profile.id }).save()
+      done(null, user)
   })
 )

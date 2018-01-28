@@ -22,7 +22,7 @@ class Header extends Component {
           <li key='2'><a href='/api/logout'>Log Out</a></li>
         ]
     }
-  } 
+  }
 
   render() {
     return (

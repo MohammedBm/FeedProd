@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form'
 import SurveyField from './SurveyField'
+import { Link } from 'react-router-dom'
 import _ from 'lodash';
 
 const FIELDS = [
@@ -23,13 +24,30 @@ class SurveyForm extends Component {
       <div>
         <form onSubmit={this.props.handleSubmit(values => console.log(values))}>
           {this.renderField()}
-          <button type='submit'>Submit</button>
+          <Link to='/surveys' className='red btn-flat white-text'>
+            Cancel
+          </Link>
+          <button type='submit' className='teal btn-flat right white-text'>
+            NEXT
+            <i className='material-icons right'>done</i>
+          </button>
         </form>
       </div>
     );
   }
 }
 
+function validate(values) {
+  const errors = {}
+
+  if(!values.title){
+    errors.title = 'You must provice a title'
+  }
+
+  return errors
+}
+
 export default reduxForm({
+  validate,
   form: 'surveyForm'
 })(SurveyForm);

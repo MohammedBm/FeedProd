@@ -5,7 +5,7 @@ import * as actions from "../actions";
 
 import Header from './Header'
 import Landing from './Landing'
-import Dashboard from './Dashbaord'
+import Dashboard from './Dashboard'
 import SurveyNew from './surveys/SurveyNew'
 class App extends Component{
   componentDidMount(){

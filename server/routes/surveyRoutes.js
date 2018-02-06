@@ -17,9 +17,7 @@ module.exports = app => {
     const events = _.map(req.body, (event) => {
       const pathname = new URL(event.url).pathname
       const p = new Path('/api/surveys/:surveyId/:choice')
-      console.log('====================================');
-      console.log(p.test(pathname));
-      console.log('====================================');
+      console.log(p.test(pathname))
     })
   })
 

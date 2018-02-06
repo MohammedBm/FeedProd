@@ -1,3 +1,6 @@
+const _ = require('lodash')
+const Path = require('path-parser')
+const { URL } = require('url')
 const mongoose = require("mongoose");
 const requireLogin = require("../middlewares/requireLogin");
 const requireCredits = require("../middlewares/requireCredits");
@@ -10,11 +13,18 @@ module.exports = app => {
     res.send('Thanks for voting')
   })
 
+  app.post('/api/surveys/webhooks', (req, res) => {
+    const events = _.map(req.body, (event) => {
+      const pathname = new URL(event.url).pathname
+      const p = new Path('/api/surveys/:surveyId/:choice')
+      console.log('====================================');
+      console.log(p.test(pathname));
+      console.log('====================================');
+    })
+  })
+
   app.post("/api/surveys", requireLogin, requireCredits, async (req, res) => {
     const { title, subject, body, recipients } = req.body;
-    console.log('------------------------------------');
-    console.log(req.body);
-    console.log('------------------------------------');
     const survey = new Survey({
       title,
       subject,
